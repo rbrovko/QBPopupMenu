@@ -1,6 +1,9 @@
 # QBPopupMenu
 Customizable popup menu for iOS.
 
+**QBPopupMenu version 2.0.1 is now available.**
+Minimum iOS 9.0. Added support right-to-left languages.
+
 **QBPopupMenu version 2.0 is now available.**  
 Its appearance is similar to `UIMenuController` of iOS 7, and it has several new features.
 
@@ -14,7 +17,7 @@ Its appearance is similar to `UIMenuController` of iOS 7, and it has several new
 ## Installation
 QBPopupMenu is available in CocoaPods.
 
-    pod 'QBPopupMenu'
+    pod 'QBPopupMenu', :git => "git@github.com:rbrovko/QBPopupMenu.git", :branch => 'egw'
 
 If you want to install manually, download this repository and copy files in QBPopupMenu directory to your project.
 
