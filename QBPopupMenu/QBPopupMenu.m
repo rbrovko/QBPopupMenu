@@ -19,8 +19,6 @@ static const NSTimeInterval kQBPopupMenuAnimationDuration = 0.2;
 @property (nonatomic, assign, getter = isVisible, readwrite) BOOL visible;
 @property (nonatomic, strong) QBPopupMenuOverlayView *overlayView;
 
-@property (nonatomic, weak) UIView *view;
-@property (nonatomic, assign) CGRect targetRect;
 
 @property (nonatomic, assign) NSUInteger page;
 @property (nonatomic, assign) QBPopupMenuArrowDirection actualArrorDirection;
@@ -105,14 +103,22 @@ static const NSTimeInterval kQBPopupMenuAnimationDuration = 0.2;
         return;
     }
     
+    //If its iphone in landscape only then menu shoudn't show over navigation bar
+    CGFloat topMenuInset = self.popupMenuInsets.top;
+    if(!(UIUserInterfaceIdiomPad == UI_USER_INTERFACE_IDIOM()) && !UIInterfaceOrientationIsPortrait([[UIApplication sharedApplication] statusBarOrientation])){
+        topMenuInset = 2*self.popupMenuInsets.top;
+    }
+    
     self.view = view;
     self.targetRect = targetRect;
     
     // Decide arrow direction
     QBPopupMenuArrowDirection arrowDirection = self.arrowDirection;
-    
-    if (arrowDirection == QBPopupMenuArrowDirectionDefault) {
-        if ((targetRect.origin.y - (self.height + self.arrowSize)) >= self.popupMenuInsets.top) {
+ 
+    //fix bug #6172; Its need not for only default direction
+//    if (arrowDirection == QBPopupMenuArrowDirectionDefault) {
+//        if ((targetRect.origin.y - (self.height + self.arrowSize)) >= self.popupMenuInsets.top) {
+        if ((targetRect.origin.y - (self.height + self.arrowSize)) >= topMenuInset){
             arrowDirection = QBPopupMenuArrowDirectionDown;
         }
         else if ((targetRect.origin.y + targetRect.size.height + (self.height + self.arrowSize)) < (view.bounds.size.height - self.popupMenuInsets.bottom)) {
@@ -124,7 +130,7 @@ static const NSTimeInterval kQBPopupMenuAnimationDuration = 0.2;
             
             arrowDirection = (left > right) ? QBPopupMenuArrowDirectionLeft : QBPopupMenuArrowDirectionRight;
         }
-    }
+//    }
     
     self.actualArrorDirection = arrowDirection;
     
@@ -156,6 +162,9 @@ static const NSTimeInterval kQBPopupMenuAnimationDuration = 0.2;
     
     // Show page
     [self showPage:0];
+    
+    // fix fast show/hide popupMenu and show 1+ overlayViews
+    [self.overlayView removeFromSuperview];
     
     // Create overlay view
     self.overlayView = ({
